@@ -1,0 +1,348 @@
+[project]
+name = "run-pipeline"
+dynamic = ["version"]
+requires-python = ">=3.11"
+description = "Pipeline runner with uv groups for per-segment envs"
+readme = "README.md"
+license = "MIT"
+
+# Example add new package: uv add --group drift-correct "scikit-image>=0.19.0" 
+
+[tool.setuptools]
+packages = ["standard_code", "standard_code.python", "standard_code.python.drift_correction_utils", "standard_code.python.bioio_imaris"]
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+# Intentionally empty; uv groups are defined below under [tool.uv.dependency-groups]
+
+[tool.uv]
+# Consider best match across indexes when multiple are configured
+index-strategy = "unsafe-best-match"
+
+# Use the PyTorch CUDA index only for torch packages
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[[tool.uv.index]]
+name = "nvidia"
+url = "https://pypi.nvidia.com"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch" }
+torchvision = { index = "pytorch" }
+torchaudio = { index = "pytorch" }
+cucim-cu12 = { index = "nvidia" }
+
+ [dependency-groups]
+default = [
+    "numpy>=2.1",
+    "scipy",
+    "scikit-image",
+    "scikit-learn",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "tqdm",
+    "joblib",
+    "h5py",
+    "dask[array]",
+    "nd2reader",
+    "trackpy",
+    "opencv-python>=4.11.0.86",
+    "pystackreg",
+    "pyGPUreg",
+    "roifile",
+
+    "jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+    "bioio",
+    "bioio-bioformats",
+    "bioio-ome-tiff",
+    "bioio-tifffile",
+    "bioio-nd2",
+    "bioio_lif",
+    "bioio_czi",
+    "bioio_dv",
+]
+
+convert-to-tif = [
+	"numpy",
+	"matplotlib",
+	"tqdm",
+	"joblib",
+	"nd2reader",
+	"dask[array]",
+	"h5py",
+	"pystackreg",
+	"pyGPUreg",
+	"roifile",
+
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+]
+
+machine-learning = [
+	"numpy",
+	"tqdm",
+	"joblib",
+	"scikit-learn",
+	"scikit-image",
+	"matplotlib",
+	"h5py",
+
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+	
+]
+
+drift-correct = [
+	"numpy",
+	"matplotlib",
+	"tqdm",
+	"joblib",
+	"nd2reader",
+	"dask[array]",
+	"h5py",
+	"pystackreg",
+	"cupy-cuda12x",
+	"pyGPUreg",
+	"imreg_dft",
+	"scikit-image>=0.19.0",
+	"scikit-learn>=1.1",
+	"pandas",
+	"scipy",
+	"opencv-python>=4.11.0.86",
+	"roifile",
+
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+]
+segment-ernet = [
+	"torch==2.4.0+cu124",
+	"torchvision==0.19.0+cu124",
+	"torchaudio==2.4.0+cu124",
+	"python-dotenv",
+	"tqdm",
+	"numpy>=1.24,<2.0",
+	"numba",
+	"scipy",
+	"scikit-image",
+	"opencv-python",
+	"matplotlib",
+	"pillow",
+	"networkx<3",
+	"imagecodecs",
+	"ipykernel",
+	"timm",
+	"einops",
+	"sknw==0.12",
+	"roifile",
+
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+]
+mask_measure = [
+	"numpy",
+	"pandas",
+	"scikit-image",
+	"tqdm",
+	"roifile",
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+]
+
+plot = [
+	"numpy",
+	"matplotlib",
+	"pandas",
+	"seaborn",
+	"scipy",
+	"scikit-image",
+	"scipy",
+	"roifile",
+
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+]
+segmentation = [
+	"numpy",
+	"scipy",
+	"scikit-image",
+	"scikit-learn",
+	"pandas",
+	"trackpy",
+	"opencv-python>=4.11.0.86",
+	"tqdm",
+	"joblib",
+	"seaborn",
+	"roifile",
+	"h5py",
+	
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+]
+denoise = [
+	"numpy",
+	"opencv-python>=4.11.0.86",
+	"scikit-image>=0.19.0",
+	"n2v>=0.3.2",
+	"tensorflow>=2.10.0,<2.16.0",
+	"keras<3.0",
+	"tqdm",
+	"roifile",
+
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+]
+run_ilastik = [
+	"numpy",
+	"scipy",
+	"scikit-image",
+	"matplotlib",
+	"opencv-python",
+	"roifile",
+	"trackpy",
+	"filelock",
+	"h5py",
+	"tqdm",
+	"joblib",
+	"pyyaml",
+	"nd2reader",
+	"roifile",
+	
+	"jdk4py>=21.0.8.0",
+    "scyjava>=1.12.4",
+	"bioio",
+	"bioio-bioformats",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+]
+
+imagej = [
+	"pyimagej>=1.4.0",
+	"scyjava",
+	"jpype1>=1.5.1",
+	"numpy",
+	"bioio",
+	"bioio-ome-tiff",
+	"bioio-tifffile",
+	"bioio-nd2",
+	"bioio_lif",
+	"bioio_czi",
+	"bioio_dv",
+	"tqdm",
+	"matplotlib",
+	"roifile",
+]
+
+cellpose3 = [
+	"cellpose==3.1.1.2",
+	"torch==2.4.0+cu124",
+	"torchvision==0.19.0+cu124",
+	"torchaudio==2.4.0+cu124",
+	"numpy",
+	"scipy",
+	"opencv-python-headless",
+	"fastremap",
+	"fill-voids",
+	"imagecodecs",
+	"llvmlite",
+	"natsort",
+	"numba",
+	"roifile",
+	"tifffile",
+	"tqdm",
+	"roifile",
+]
+
+# Development dependencies
+dev = [
+	"pytest>=7.0",
+	"pytest-cov",
+	"black",
+	"isort",
+	"flake8",
+	"mypy",
+	"pre-commit",
+	"jupyter",
+	"ipython",
+	"roifile",
+]
